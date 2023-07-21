@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import './App.css'
+import Products from './Components/Products/Products';
+import Cart from './Components/Cart/Cart';
+import { getProducts } from './Services/products';
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -8,7 +10,7 @@ const App = () => {
   const [cartTotal, setCartTotal] = useState(0);
 
   useEffect(() => {
-    axios.get('https://fakestoreapi.com/products?limit=10')
+    getProducts()
       .then((response) => setProducts(response.data))
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
@@ -25,54 +27,8 @@ const App = () => {
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="col-md-8">
-          <h2>Products</h2>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.id}>
-                  <td>{product.title}</td>
-                  <td>${product.price}</td>
-                  <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleAddToCart(product)}
-                    >
-                      Add to Cart
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="col-md-4">
-          <h2>Cart</h2>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cart.map((product) => (
-                <tr key={product.id}>
-                  <td>{product.title}</td>
-                  <td>${product.price}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <h4>Total: ${cartTotal.toFixed(2)}</h4>
-        </div>
+        <Products products={products} handleAddToCart={handleAddToCart} />
+        <Cart cart={cart} cartTotal={cartTotal} />
       </div>
     </div>
   );
